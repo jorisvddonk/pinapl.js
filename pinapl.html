@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<script src="pinapl.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="libs/watch.js"></script>
+	</head>
+	<body>
+		<h3>Pinapl.js - click the 'step100' button or hold down the mouse button on the source image.</h3>
+		<!--<img src="examples/life.png" id="srcimage"></img>-->
+		<img src="examples/99bottles.png" id="srcimage"></img>
+		<div id="content"></div>
+		<canvas id="canvas"></canvas>
+		<div>X: <span id="pX"></div>
+		<div>Y: <span id="pY"></div>
+		<div>DIR: <span id="pDIR"></div>
+		<button id="step" onclick="doStep()">Step100</button>
+		<br/>
+		<textarea id="output" style="width: 900px; height: 400px;"></textarea>
+		<script type="text/javascript">
+		$("img").on("load", function(){loadImage();});
+
+		var loadImage = function(){
+			var img = $("img")[0];
+			$("#canvas").attr("width", img.width);
+			$("#canvas").attr("height", img.height); 
+			var canvas = $("#canvas")[0];
+			canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
+			$("img").remove();
+			initPinapl(canvas);
+
+			//Setup watchers
+			//WARNING: slow!
+			/*watch(pPTR, "x", function(prop, action, newvalue, oldvalue){
+				$("#pX").html(newvalue);
+			});
+			watch(pPTR, "y", function(prop, action, newvalue, oldvalue){
+				$("#pY").html(newvalue);
+			});
+			watch(pPTR, "dir", function(prop, action, newvalue, oldvalue){
+				$("#pDIR").html(newvalue);
+			});*/
+
+			//Mousedown handler
+			var stepInterv;
+			$("#canvas").mousedown(function(){
+				stepInterv = setInterval(function(){
+					doStep();
+				},0);
+			});
+			$("#canvas").mouseout(function(){clearInterval(stepInterv)});
+			$("#canvas").mouseup(function(){clearInterval(stepInterv)});
+		}
+
+		var doStep = function(){
+			for(var i = 0; i < 100; i++) {step()};
+			stdoutFlush();
+			$("#output")[0].scrollTop = $("#output")[0].scrollHeight;
+		}
+		</script>
+	</body>
+</html>
